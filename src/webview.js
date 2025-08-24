@@ -312,8 +312,8 @@
     if (sendToCopilotChatButton) {
         sendToCopilotChatButton.addEventListener('click', () => {
             console.log('Webview: "Send to Copilot Chat" button clicked.');
-            const finalPlanMarkdown = window.exportPlanToMarkdown(planState);
-            vscode.postMessage({ command: 'sendToCopilotChat', content: finalPlanMarkdown });
+            const copilotChatContent = window.formatForCopilotChat(planState);
+            vscode.postMessage({ command: 'sendToCopilotChat', content: copilotChatContent });
         });
     }
 
@@ -337,6 +337,10 @@
                 if (message.state) {
                     updateUI(message.state);
                 }
+                break;
+            case 'getMarkdownContent':
+                const markdown = window.exportPlanToMarkdown(planState);
+                vscode.postMessage({ command: 'markdownContentResponse', content: markdown });
                 break;
             // Removed 'updateStepStatus' as stateUpdated will handle full UI refresh
         }

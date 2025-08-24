@@ -176,6 +176,7 @@ Now create your technical implementation plan using the exact "Step X:" format:`
 // }
 
 // Improved refine step function - asks for alternatives instead of more detail
+
 export async function refineStep(openai: OpenAI, originalStep: string, allSteps: string[], stepIndex: number, taskContext: string, projectContext: string): Promise<string> {
     try {
         const otherSteps = allSteps
@@ -188,20 +189,54 @@ export async function refineStep(openai: OpenAI, originalStep: string, allSteps:
             messages: [
                 { 
                     role: "system", 
-                    content: `You are an expert software architect helping to improve implementation plans. A user rejected a step, meaning they want a DIFFERENT approach, not more detail.\n\nGUIDELINES:\n- Suggest a completely different approach or method for achieving the same goal\n- Consider alternative technologies, patterns, or architectures\n- Think of creative solutions the user might not have considered\n- Keep it practical and implementable\n- Format as plain text without markdown formatting (no ** or ## or bullets)\n- Make it concise but complete (2-4 sentences)\n- Focus on WHAT and HOW, be specific about files/commands when helpful`
+                    content: `You are an expert software engineer providing alternative implementation approaches. When a user rejects a step, they want a DIFFERENT technical approach, not more explanation.
+
+FORMATTING REQUIREMENTS:
+- Provide a direct replacement step with the same technical depth as the original
+- Include specific file paths, function names, and technical details
+- Mention exact dependencies, packages, or commands needed
+- Keep the same level of implementation detail as the rejected step
+- Use plain text without markdown formatting
+- Make it actionable and specific (2-4 sentences)
+
+ALTERNATIVE APPROACH GUIDELINES:
+- Suggest different technologies/libraries for the same goal
+- Propose alternative architectural patterns
+- Consider different implementation strategies
+- Think about different file structures or organization methods
+- Suggest alternative frameworks or tools when applicable`
                 },
                 { 
                     role: "user", 
-                    content: `The user rejected this step from their implementation plan:\n\nREJECTED STEP: "${originalStep}"\n\nCONTEXT - This was part of a plan for: "${taskContext}"\n\nOTHER STEPS IN THE PLAN:\n${otherSteps}\n\nPROJECT CONTEXT: "${projectContext}"\n\nThe user wants a different approach for this step. Suggest an alternative way to accomplish the same goal. Avoid markdown formatting - use plain text only.`
+                    content: `TASK CONTEXT: "${taskContext}"
+
+PROJECT CONTEXT:
+${projectContext}
+
+REJECTED STEP (Step ${stepIndex + 1}): 
+${originalStep}
+
+OTHER STEPS IN PLAN:
+${otherSteps}
+
+The user rejected the above step and wants an alternative approach to achieve the same goal. Provide a replacement step with:
+✓ Same technical depth and specificity
+✓ Different approach/technology/pattern
+✓ Exact file paths and names where relevant
+✓ Specific function/method names
+✓ Required commands or configurations
+✓ Consideration of the surrounding steps for context
+
+Generate ONLY the alternative step content (no "Step X:" prefix - that will be added automatically).`
                 }
             ],
-            temperature: 0.4, // Slightly higher for creativity
-            max_tokens: 300,
+            temperature: 0.3, // Lower temperature for more consistent technical detail
+            max_tokens: 400, // Increased to match original step complexity
         });
         
         const refinedStep = response.choices[0].message?.content?.trim() || "Failed to refine step.";
         
-        // Clean up any remaining markdown formatting
+        // Clean up any remaining markdown formatting to match original style
         return cleanMarkdown(refinedStep);
     } catch (error) {
         console.error('Error refining step:', error);

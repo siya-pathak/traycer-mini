@@ -26,7 +26,9 @@ type PlanMessage =
     | { command: 'deleteStep'; id: string }
     | { command: 'addStep'; afterId: string | null; content: string }
     | { command: 'savePlan' }
-    | { command: 'sendToCopilotChat'; content: string };
+    | { command: 'sendToCopilotChat'; content: string }
+    | { command: 'getMarkdownContent' }
+    | { command: 'markdownContentResponse'; content: string };
 
 // This method is called when your extension is activated
 // Your extension is activated the very first time the command is executed
@@ -252,7 +254,11 @@ export function activate(context: vscode.ExtensionContext) {
                                 break;
 
                             case 'savePlan':
-                                const markdownContent = getAdvancedWebviewContent(panel.webview, context.extensionUri, planState, nonce);
+                                panel.webview.postMessage({ command: 'getMarkdownContent' });
+                                break;
+
+                            case 'markdownContentResponse':
+                                const markdownContent = message.content;
                                 const document = await vscode.workspace.openTextDocument({ content: markdownContent, language: 'markdown' });
                                 await vscode.window.showTextDocument(document);
                                 vscode.window.showInformationMessage('Plan exported to a new untitled markdown document.');
@@ -260,7 +266,7 @@ export function activate(context: vscode.ExtensionContext) {
 
                             case 'sendToCopilotChat':
                                 await vscode.env.clipboard.writeText(message.content);
-                                vscode.window.showInformationMessage('Plan successfully copied to clipboard.');
+                                vscode.window.showWarningMessage('Copied to clipboard! You can now send to Copilot Chat.');
                                 break;
                         }
 

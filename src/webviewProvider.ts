@@ -112,6 +112,14 @@ function exportPlanToMarkdown(planState: PlanState): string {
     return markdown;
 }
 
+function formatForCopilotChat(planState: PlanState): string {
+    let copilotPrompt = `I want to create some ${planState.taskDescription}. Here are the steps:\n`;
+    planState.steps.forEach(step => {
+        copilotPrompt += `- ${step.content}\n`;
+    });
+    return copilotPrompt;
+}
+
 export function getAdvancedWebviewContent(webview: vscode.Webview, extensionUri: vscode.Uri, planState: PlanState, nonce: string): string {
     const htmlPath = path.join(extensionUri.fsPath, 'src', 'webview.html');
     const cssPath = path.join(extensionUri.fsPath, 'src', 'webview.css');
@@ -136,6 +144,7 @@ export function getAdvancedWebviewContent(webview: vscode.Webview, extensionUri:
             window.cleanMarkdown = ${cleanMarkdown.toString()};
             window.createEditableStepCard = ${createEditableStepCard.toString()};
             window.exportPlanToMarkdown = ${exportPlanToMarkdown.toString()};
+            window.formatForCopilotChat = ${formatForCopilotChat.toString()};
         </script>
     `;
     htmlContent = htmlContent.replace('</body>', `${scriptToInject}</body>`);
