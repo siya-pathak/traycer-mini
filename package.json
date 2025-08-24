@@ -20,6 +20,11 @@
       {
         "command": "traycer-mini.generatePlan",
         "title": "Traycer Mini: Generate Plan"
+      },
+      {
+        "command": "traycer-mini.copyPlanStepToClipboard",
+        "title": "Traycer Mini: Copy Plan Step to Clipboard",
+        "icon": "$(copy)"
       }
     ],
     "configuration": {

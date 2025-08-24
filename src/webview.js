@@ -308,12 +308,12 @@
         savePlanButton.addEventListener('click', saveExportPlan);
     }
 
-    const sendToVSCodeButton = document.getElementById('sendToVSCodeButton');
-    if (sendToVSCodeButton) {
-        sendToVSCodeButton.addEventListener('click', () => {
+    const sendToCopilotChatButton = document.getElementById('sendToCopilotChatButton');
+    if (sendToCopilotChatButton) {
+        sendToCopilotChatButton.addEventListener('click', () => {
             console.log('Webview: "Send to Copilot Chat" button clicked.');
-            const planTextContent = planState.steps.map(step => `Step ${step.originalIndex}: ${step.content}`).join('\n');
-            vscode.postMessage({ command: 'sendPlanToCopilotChat', plan: planTextContent });
+            const finalPlanMarkdown = window.exportPlanToMarkdown(planState);
+            vscode.postMessage({ command: 'sendToCopilotChat', content: finalPlanMarkdown });
         });
     }
 

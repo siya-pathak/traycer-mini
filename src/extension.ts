@@ -26,7 +26,7 @@ type PlanMessage =
     | { command: 'deleteStep'; id: string }
     | { command: 'addStep'; afterId: string | null; content: string }
     | { command: 'savePlan' }
-    | { command: 'sendPlanToCopilotChat' };
+    | { command: 'sendToCopilotChat'; content: string };
 
 // This method is called when your extension is activated
 // Your extension is activated the very first time the command is executed
@@ -35,6 +35,15 @@ export function activate(context: vscode.ExtensionContext) {
 
 	let disposableHello = vscode.commands.registerCommand('traycer-mini.helloWorld', () => {
 		vscode.window.showInformationMessage('Hello World from Traycer Mini!');
+	});
+
+	let disposableCopyToClipboard = vscode.commands.registerCommand('traycer-mini.copyPlanStepToClipboard', async (stepContent: string) => {
+		if (stepContent) {
+			await vscode.env.clipboard.writeText(stepContent);
+			vscode.window.showInformationMessage('Plan step copied to clipboard!');
+		} else {
+			vscode.window.showWarningMessage('No content to copy for this plan step.');
+		}
 	});
 
 	let disposableGeneratePlan = vscode.commands.registerCommand('traycer-mini.generatePlan', async () => {
@@ -60,26 +69,6 @@ export function activate(context: vscode.ExtensionContext) {
         const validateStepOperation = (id: string, steps: PlanStep[]): boolean => {
             return steps.some(step => step.id === id);
         };
-
-        const exportPlanToMarkdown = (planState: PlanState): string => {
-            let markdown = `# Plan for: ${planState.taskDescription}\n\n`;
-            markdown += `_Generated on: ${planState.lastModified.toLocaleString()}_\n\n`;
-            planState.steps.forEach(step => {
-                let statusIndicator = '';
-                if (step.status === 'accepted') {
-                    statusIndicator = '[x]';
-                } else if (step.status === 'rejected') {
-                    statusIndicator = '[r]';
-                } else if (step.status === 'edited') {
-                    statusIndicator = '[e]';
-                } else {
-                    statusIndicator = '[ ]';
-                }
-                markdown += `- ${statusIndicator} ${step.content}\n`;
-            });
-            return markdown;
-        };
-
 
         const task = await vscode.window.showInputBox({
             prompt: 'Enter a high-level task for implementation planning:',
@@ -263,10 +252,15 @@ export function activate(context: vscode.ExtensionContext) {
                                 break;
 
                             case 'savePlan':
-                                const markdownContent = exportPlanToMarkdown(planState);
+                                const markdownContent = getAdvancedWebviewContent(panel.webview, context.extensionUri, planState, nonce);
                                 const document = await vscode.workspace.openTextDocument({ content: markdownContent, language: 'markdown' });
                                 await vscode.window.showTextDocument(document);
                                 vscode.window.showInformationMessage('Plan exported to a new untitled markdown document.');
+                                break;
+
+                            case 'sendToCopilotChat':
+                                await vscode.env.clipboard.writeText(message.content);
+                                vscode.window.showInformationMessage('Plan successfully copied to clipboard.');
                                 break;
                         }
 
@@ -287,7 +281,7 @@ export function activate(context: vscode.ExtensionContext) {
         });
 	});
 
-	context.subscriptions.push(disposableHello, disposableGeneratePlan);
+	context.subscriptions.push(disposableHello, disposableGeneratePlan, disposableCopyToClipboard);
 }
 
 export function deactivate() {}

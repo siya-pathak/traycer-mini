@@ -93,6 +93,25 @@ function createEditableStepCard(step: PlanStep): string {
     `;
 }
 
+function exportPlanToMarkdown(planState: PlanState): string {
+    let markdown = `# Plan for: ${planState.taskDescription}\n\n`;
+    markdown += `_Generated on: ${planState.lastModified.toLocaleString()}_\n\n`;
+    planState.steps.forEach(step => {
+        let statusIndicator = '';
+        if (step.status === 'accepted') {
+            statusIndicator = '[x]';
+        } else if (step.status === 'rejected') {
+            statusIndicator = '[r]';
+        } else if (step.status === 'edited') {
+            statusIndicator = '[e]';
+        } else {
+            statusIndicator = '[ ]';
+        }
+        markdown += `- ${statusIndicator} ${step.content}\n`;
+    });
+    return markdown;
+}
+
 export function getAdvancedWebviewContent(webview: vscode.Webview, extensionUri: vscode.Uri, planState: PlanState, nonce: string): string {
     const htmlPath = path.join(extensionUri.fsPath, 'src', 'webview.html');
     const cssPath = path.join(extensionUri.fsPath, 'src', 'webview.css');
@@ -116,6 +135,7 @@ export function getAdvancedWebviewContent(webview: vscode.Webview, extensionUri:
             window.planState = ${JSON.stringify(planState)};
             window.cleanMarkdown = ${cleanMarkdown.toString()};
             window.createEditableStepCard = ${createEditableStepCard.toString()};
+            window.exportPlanToMarkdown = ${exportPlanToMarkdown.toString()};
         </script>
     `;
     htmlContent = htmlContent.replace('</body>', `${scriptToInject}</body>`);
