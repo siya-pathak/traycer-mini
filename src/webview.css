@@ -1,0 +1,294 @@
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+    color: var(--vscode-editor-foreground);
+    background-color: var(--vscode-editor-background);
+    margin: 20px;
+    line-height: 1.6;
+}
+
+h1 {
+    color: var(--vscode-textSeparator-foreground);
+    border-bottom: 1px solid var(--vscode-widget-border);
+    padding-bottom: 10px;
+}
+
+.progress-bar {
+    width: 100%;
+    background-color: var(--vscode-progressBar-background);
+    border-radius: 5px;
+    overflow: hidden;
+    margin-bottom: 10px;
+    height: 10px;
+}
+
+.progress-fill {
+    height: 100%;
+    width: 0%;
+    background-color: var(--vscode-gitDecoration-addedResourceForeground);
+    transition: width 0.3s ease-in-out;
+}
+
+.progress-text {
+    font-size: 0.9em;
+    color: var(--vscode-descriptionForeground);
+    margin-bottom: 20px;
+}
+
+.instructions {
+    background-color: var(--vscode-editorGroup-border);
+    border-left: 3px solid var(--vscode-editorInfo-foreground);
+    padding: 10px 15px;
+    margin-bottom: 20px;
+    font-size: 0.9em;
+}
+
+.task-description {
+    font-size: 1.1em;
+    margin-bottom: 20px;
+    padding: 10px;
+    background-color: var(--vscode-editorWidget-background);
+    border-left: 3px solid var(--vscode-editorInfo-foreground);
+}
+
+.steps-container {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.step-card {
+    background-color: var(--vscode-editorWidget-background);
+    border: 1px solid var(--vscode-widget-border);
+    border-radius: 5px;
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    transition: all 0.2s ease-in-out;
+    position: relative;
+}
+
+.step-card:hover {
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    transform: translateY(-2px);
+}
+
+.step-card.accepted {
+    border-left: 5px solid var(--vscode-gitDecoration-addedResourceForeground);
+    opacity: 0.8;
+}
+
+.step-card.rejected {
+    border-left: 5px solid var(--vscode-gitDecoration-deletedResourceForeground);
+    opacity: 0.6;
+}
+
+.step-card.edited {
+    border-left: 5px solid var(--vscode-gitDecoration-modifiedResourceForeground);
+}
+
+.step-card.refining {
+    border-left: 5px solid var(--vscode-editorWarning-foreground);
+    opacity: 0.7;
+    animation: pulse 1.5s infinite alternate;
+}
+
+@keyframes pulse {
+    from { opacity: 0.7; }
+    to { opacity: 1; }
+}
+
+.step-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+}
+
+.step-status-icon {
+    font-size: 1.2em;
+    margin-right: 5px;
+}
+
+.step-title {
+    font-weight: bold;
+    font-size: 1.1em;
+    flex-grow: 1;
+    display: flex;
+    align-items: center;
+}
+
+.step-content {
+    font-size: 0.95em;
+    color: var(--vscode-foreground);
+    white-space: pre-wrap;
+    word-break: break-word;
+}
+
+.contenteditable-content {
+    border: 1px solid transparent;
+    padding: 5px;
+    min-height: 20px;
+}
+
+.contenteditable-content[contenteditable="true"] {
+    border: 1px dashed var(--vscode-focusBorder);
+    background-color: var(--vscode-input-background);
+    outline: none;
+}
+
+.step-actions {
+    display: flex;
+    gap: 5px;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+}
+
+.step-actions button,
+.save-export-bar button,
+.add-step-button,
+#copilot-editor-section button {
+    background-color: var(--vscode-button-background);
+    color: var(--vscode-button-foreground);
+    border: none;
+    padding: 8px 12px;
+    border-radius: 3px;
+    cursor: pointer;
+    font-size: 0.9em;
+    transition: background-color 0.2s ease;
+}
+
+.step-actions button:hover,
+.save-export-bar button:hover,
+.add-step-button:hover,
+#copilot-editor-section button:hover {
+    background-color: var(--vscode-button-hoverBackground);
+}
+
+.step-actions button:disabled,
+.save-export-bar button:disabled,
+.add-step-button:disabled,
+#copilot-editor-section button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.accept-button {
+    background-color: var(--vscode-button-background);
+}
+
+.accept-button:hover {
+    background-color: var(--vscode-button-hoverBackground);
+}
+
+.reject-button {
+    background-color: var(--vscode-button-background);
+}
+
+.reject-button:hover {
+    background-color: var(--vscode-button-hoverBackground);
+}
+
+.edit-button, .delete-button {
+    background-color: var(--vscode-button-background);
+}
+
+.edit-button:hover, .delete-button:hover {
+    background-color: var(--vscode-button-hoverBackground);
+}
+
+.save-edit-button {
+    background-color: var(--vscode-button-background);
+    display: none;
+}
+
+.cancel-edit-button {
+    background-color: var(--vscode-button-background);
+    display: none;
+}
+
+.add-step-button {
+    width: 100%;
+    margin-top: 20px;
+    background-color: var(--vscode-button-background);
+}
+
+.save-export-bar {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+    padding-top: 15px;
+    border-top: 1px solid var(--vscode-widget-border);
+}
+
+.drag-handle {
+    cursor: grab;
+    font-size: 1.2em;
+    margin-left: 10px;
+    color: var(--vscode-descriptionForeground);
+    align-self: center;
+}
+
+.reorder-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    margin-right: 10px;
+}
+
+.reorder-buttons button {
+    padding: 3px 6px;
+    font-size: 0.8em;
+    line-height: 1;
+}
+
+/* Styling for the Copilot editor section */
+#copilot-editor-section {
+    margin-top: 30px;
+    padding: 20px;
+    border: 1px solid var(--vscode-panel-border);
+    border-radius: 5px;
+    background-color: var(--vscode-editorWidget-background);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+#copilot-editor-section h2 {
+    color: var(--vscode-textSeparator-foreground);
+    border-bottom: 1px solid var(--vscode-widget-border);
+    padding-bottom: 10px;
+    margin-top: 0;
+}
+
+#copilotPlanEditor {
+    width: 100%;
+    min-height: 300px;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid var(--vscode-input-border);
+    border-radius: 3px;
+    background-color: var(--vscode-input-background);
+    color: var(--vscode-input-foreground);
+    font-family: monospace;
+    font-size: 0.95em;
+    resize: vertical;
+}
+
+#copilot-editor-section button {
+    margin-right: 10px;
+}
+
+/* Drag and drop styling */
+.steps-container .step-card[data-dragging="true"] {
+    opacity: 0.5;
+    border: 2px dashed var(--vscode-focusBorder);
+}
+
+.steps-container .step-card.drag-over-top {
+    border-top: 2px solid var(--vscode-editor-selectionHighlightBackground);
+}
+
+.steps-container .step-card.drag-over-bottom {
+    border-bottom: 2px solid var(--vscode-editor-selectionHighlightBackground);
+}

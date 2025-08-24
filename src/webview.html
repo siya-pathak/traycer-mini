@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Implementation Plan</title>
+    <link rel="stylesheet" href="{{cssUri}}">
+</head>
+<body>
+    <h1>🎯 Implementation Plan</h1>
+    <div class="progress-bar">
+        <div class="progress-fill"></div>
+    </div>
+    <div class="progress-text"></div>
+    
+    <div class="instructions">
+        💡 <strong>Instructions:</strong> Review each step below. Click "Accept" if the step is clear and actionable, or "Try Alternative" to get a different approach using AI.
+    </div>
+    
+    <div class="task-description"><strong>Task:</strong> {{taskDescription}}</div>
+    <div class="steps-container">
+        {{stepCardsHtml}}
+    </div>
+
+    <button class="add-step-button">➕ Add New Step</button>
+
+    <div class="save-export-bar">
+        <button id="savePlanButton">💾 Save / Export Plan</button>
+        <button id="sendToVSCodeButton">↗️ Send to Copilot Chat</button>
+    </div>
+
+    <script nonce="{{nonce}}" src="{{jsUri}}"></script>
+</body>
+</html>
